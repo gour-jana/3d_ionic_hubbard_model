@@ -109,6 +109,8 @@
 !         print*,ttemp(temp),mu(temp)
  !      enddo
 
+print*,"hiiiiiii"
+
 
 	T=1.10d0
 
