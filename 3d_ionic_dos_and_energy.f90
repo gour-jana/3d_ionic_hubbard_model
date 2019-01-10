@@ -111,6 +111,7 @@
 
 print*,"hiiiiiii"
 
+print*,"test"
 
 	T=1.10d0
 
