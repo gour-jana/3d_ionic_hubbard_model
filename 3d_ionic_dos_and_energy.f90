@@ -109,9 +109,6 @@
 !         print*,ttemp(temp),mu(temp)
  !      enddo
 
-print*,"hiiiiiii"
-
-print*,"test"
 
 	T=1.10d0
 
