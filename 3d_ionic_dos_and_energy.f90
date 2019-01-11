@@ -23,7 +23,7 @@
 	  double precision::get_mu,mc_mu,w,dw
 	  double precision::inp
 	  double precision::fs,sys_energy,mc_energy
-		character(len=8 )::grnsfn
+		character(len=100)::config_file
 		character(100)::dosfile
 	  
 	  open (21,file='dos_input.dat',status='unknown')
@@ -39,7 +39,7 @@
 	    if (i.eq.8)U1=dble(inp)
 	    if (i.eq.9)filling=dble(inp)
 	    if (i.eq.10)gama=dble(inp)
-	    if (i.eq.11)strnth=dble(inp)
+			if (i.eq.11)strnth=dble(inp)
 	  enddo
 
 	  
@@ -62,7 +62,7 @@
 	  allocate(m_s(d**3),th_s(d**3),ph_s(d**3))
 	  allocate(ion_pot(d**3),n_total(d**3))
 	  allocate(op_fl(Tgrid_max*config*d**3,5),dos(2000),ttemp(Tgrid_max),mu(Tgrid_max))
-	  12 format('fort.',I3, '')
+!	  12 format('fort.',I3, '')
 	  
       pi=acos(-1.0d0)
 
@@ -92,8 +92,8 @@
 
 	 
        do temp=1,Tgrid_max
-         write(grnsfn,12) 300+temp
-         open(unit=7,file=grnsfn,status='unknown')
+         write(config_file,"(a,I0,a)")"config_"temp".txt"
+         open(unit=7,file=config_file,status='unknown')
          do q=1,config*d**3
            read(7,*)op_fl(q+((temp-1)*config*d**3),1:5)
          enddo
@@ -153,7 +153,7 @@
 			open(unit=23,file="dos_T_energy_density_mu.txt",status="unknown")
 
 			open(unit=24,file="dos_T_mu_density.txt",status=unknown)
-			
+
 			write(dosfile,"(a,Io,a)")"dos_"temp".txt"
 			open(unit=800,file=dosfile,status="unknown")
 		
