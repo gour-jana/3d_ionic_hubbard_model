@@ -23,7 +23,8 @@
 	  double precision::get_mu,mc_mu,w,dw
 	  double precision::inp
 	  double precision::fs,sys_energy,mc_energy
-	  character(len=8 )::grnsfn
+		character(len=8 )::grnsfn
+		character(100)::dosfile
 	  
 	  open (21,file='dos_input.dat',status='unknown')
 	  do i=1,11
@@ -148,11 +149,18 @@
 !	  do i=1,2*d**3
 !	    fs=fs+(1.0d0/(exp((evl(i)-(mc_mu/dble(mc_count)))/T)+1.0d0))
 !	  end do
+			
+			open(unit=23,file="dos_T_energy_density_mu.txt",status="unknown")
 
-      fs=0.0d0
-	  do i=1,2*d**3
-	    fs=fs+(1.0d0/(exp((evl(i)-mu_sys)/T)+1.0d0))
-	  end do
+			open(unit=24,file="dos_T_mu_density.txt",status=unknown)
+			
+			write(dosfile,"(a,Io,a)")"dos_"temp".txt"
+			open(unit=800,file=dosfile,status="unknown")
+		
+    	fs=0.0d0
+		  do i=1,2*d**3
+	     fs=fs+(1.0d0/(exp((evl(i)-mu_sys)/T)+1.0d0))
+	    end do
 	
       write(23,*)T,mc_energy/dble(mc_count),fs,mu_sys
       flush(23)
@@ -160,12 +168,12 @@
 !      write(24,*)T,mc_mu/dble(mc_count),fs
 !      flush(24)
       
-      w=-10.0d0
+      w=-20.0d0
       dw=0.02
-      do iw=1,1000
+      do iw=1,2000
         w=w+dw
-        write(800+temp,*)w,dos(iw)/dble(mc_count)
-        flush(800+temp)     
+        write(800,*)w,dos(iw)/dble(mc_count)
+        flush(800)     
       enddo
         
     enddo  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! temp        
@@ -254,19 +262,19 @@
 	  enddo	    
 	enddo
         
-    do i=1,2*d**3
-      do j=1,2*d**3
-        write(25,*)i,j,real(H(i,j))!,j=1,2*d**3)
-      enddo       
-    enddo
+  !  do i=1,2*d**3
+  !    do j=1,2*d**3
+  !      write(25,*)i,j,real(H(i,j))!,j=1,2*d**3)
+  !    enddo       
+  !  enddo
     
     call zheev ('N','U',2*d**3,H,2*d**3,evl,work,2*(2*d**3)-1,rwork,info)
     if(info.ne.0) print*,info
   
-    do i=1,2*d**3
-      write(26,*)i,evl(i)
-    enddo
-        
+  !  do i=1,2*d**3
+  !    write(26,*)i,evl(i)
+  !  enddo
+  return      
 	end
 	
 !.......................................................................
@@ -354,9 +362,9 @@
 	implicit none
 	integer::iw,i
 	double precision::w,dw,dos_sum
-    w=-10.0d0
+    w=-20.0d0
     dw=0.02
-    do iw=1,1000
+    do iw=1,2000
       w=w+dw
       dos_sum=0.0d0
       do i=1,2*d**3       
