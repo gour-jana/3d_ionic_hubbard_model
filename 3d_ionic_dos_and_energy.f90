@@ -41,7 +41,7 @@
 	    if (i.eq.8)U1=dble(inp)
 	    if (i.eq.9)filling=dble(inp)
 	    if (i.eq.10)gama=dble(inp)
-			if (i.eq.11)strnth=dble(inp)
+		if (i.eq.11)strnth=dble(inp)
 		enddo
 		
 		open(unit=14,file="path.txt",status="unknown")
@@ -51,6 +51,7 @@
 		open(unit=15,file="print_path.txt",status="unknown")
 		write(15,*)path
 		flush(15)
+		close(15)
 
 	  
 	  Print*,"System size,  d=", d
@@ -103,7 +104,7 @@
 
 	 
        do temp=1,1!Tgrid_max
-         write(config_file,"(a,I0,a)")"config_"temp".txt"
+         write(config_file,"(a,I0,a)")"config_",temp,".txt"
          open(unit=7,file=trim(adjustl(path))//"config_file",status='unknown')
          do q=1,config*d**3
            read(7,*)op_fl(q+((temp-1)*config*d**3),1:5)
@@ -159,9 +160,9 @@
 			
 			open(unit=23,file="dos_T_energy_density_mu.txt",status="unknown")
 
-			open(unit=24,file="dos_T_mu_density.txt",status=unknown)
+			open(unit=24,file="dos_T_mu_density.txt",status="unknown")
 
-			write(dosfile,"(a,Io,a)")"dos_"temp".txt"
+			write(dosfile,"(a,I0,a)")"dos_",temp,".txt"
 			open(unit=800,file=dosfile,status="unknown")
 		
 			fs1=0.0d0
