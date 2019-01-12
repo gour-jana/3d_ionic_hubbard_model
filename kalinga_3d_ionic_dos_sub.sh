@@ -7,7 +7,7 @@ sub=job.sge
 mkdir -p 3d_ionic_DOS
 cd 3d_ionic_DOS
 
-for U1 in  1.0 2.0 3.0 4.0 5.0 6.0 8.0 10.0 12.0 14.0 16.0 18.0 20.0
+for U1 in  1.0 2.0 3.0 
 do
 mkdir -p U_$U1
 cd U_$U1
