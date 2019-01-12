@@ -20,14 +20,15 @@
 	  integer::l,x,y,z,i
 	  integer::temp,count1,config
 	  integer::mc_count,p,q,iw
-	  double precision::get_mu,mc_mu,w,dw
+	  double precision::get_mu,mc_mu,w,dw,mu_sys_self
 	  double precision::inp
-	  double precision::fs,sys_energy,mc_energy
+		double precision::fs,fs1,sys_energy,mc_energy
+		
 		character(len=100)::config_file
 		character(100)::dosfile
 		character(300)::path
 	  
-	  open (21,file='input.dat',status='unknown')
+	  open (21,file='dos_input.dat',status='unknown')
 	  do i=1,11
 	    read (21,*)inp
 	    if (i.eq.1)d=int(inp)
@@ -65,15 +66,16 @@
 	  print*,"strength of the ionic potential=", strnth  
 	  
 	  ds=filling*d**3 
-	  config=(MCSW/(2*intrval))+1	  
+		config=(MCSW/(2*intrval))+1	 
+		 
 	  allocate(px(d**3),py(d**3),pz(d**3),H(2*d**3,2*d**3))
 	  allocate(evl(2*d**3),work(2*(2*d**3)-1),rwork(3*(2*d**3)-2))
 	  allocate(m_s(d**3),th_s(d**3),ph_s(d**3))
 	  allocate(ion_pot(d**3),n_total(d**3))
-	  allocate(op_fl(Tgrid_max*config*d**3,5),dos(2000),ttemp(Tgrid_max),mu(Tgrid_max))
+	  allocate(op_fl(Tgrid_max*config*d**3,5),dos(5000),ttemp(Tgrid_max),mu(Tgrid_max))
 !	  12 format('fort.',I3, '')
 	  
-      pi=acos(-1.0d0)
+   pi=acos(-1.0d0)
 
 	 do l=1,d**3
 	   do z=1,d
@@ -100,7 +102,7 @@
 	  enddo
 
 	 
-       do temp=1,Tgrid_max
+       do temp=1,1!Tgrid_max
          write(config_file,"(a,I0,a)")"config_"temp".txt"
          open(unit=7,file=trim(adjustl(path))//"config_file",status='unknown')
          do q=1,config*d**3
@@ -110,7 +112,7 @@
        enddo
        
        open(unit=27,file="fort.18",status="unknown")
-         do temp=1,Tgrid_max
+         do temp=1,1!Tgrid_max
            read(27,*)ttemp(temp),mu(temp)
          enddo
        close(27)
@@ -122,7 +124,7 @@
 
 	T=1.10d0
 
-	do temp=1,Tgrid_max
+	do temp=1,1!Tgrid_max
       if(temp.le.7)T=T-0.10d0
       if((temp.gt.7).and.(temp.le.19))T=T-0.025d0
       if((temp.gt.19).and.(temp.le.28))T=T-0.01d0
@@ -144,20 +146,16 @@
           n_total(l)=op_fl(p,5)
         enddo   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! site 
         call system_matrix_gen
- !       mu_sys=get_mu(dble(ds))
+        mu_sys_self=get_mu(dble(ds))
          mu_sys=mu(temp)
         call energy(mu_sys,sys_energy)
         call cal_dos
         
         mc_energy=mc_energy+sys_energy
-  !      mc_mu=mc_mu+mu_sys
+        mc_mu=mc_mu+mu_sys_self
         
       enddo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! mc 
       
- !     fs=0.0d0
-!	  do i=1,2*d**3
-!	    fs=fs+(1.0d0/(exp((evl(i)-(mc_mu/dble(mc_count)))/T)+1.0d0))
-!	  end do
 			
 			open(unit=23,file="dos_T_energy_density_mu.txt",status="unknown")
 
@@ -166,6 +164,11 @@
 			write(dosfile,"(a,Io,a)")"dos_"temp".txt"
 			open(unit=800,file=dosfile,status="unknown")
 		
+			fs1=0.0d0
+			do i=1,2*d**3
+				fs1=fs1+(1.0d0/(exp((evl(i)-(mc_mu/dble(mc_count)))/T)+1.0d0))
+			end do
+
     	fs=0.0d0
 		  do i=1,2*d**3
 	     fs=fs+(1.0d0/(exp((evl(i)-mu_sys)/T)+1.0d0))
@@ -174,14 +177,14 @@
       write(23,*)T,mc_energy/dble(mc_count),fs,mu_sys
       flush(23)
       
-!      write(24,*)T,mc_mu/dble(mc_count),fs
-!      flush(24)
+      write(24,*)T,mc_mu/dble(mc_count),fs1
+      flush(24)
       
       w=-20.0d0
       dw=0.02
       do iw=1,2000
         w=w+dw
-        write(800,*)w,dos(iw)/dble(mc_count)
+        write(800,*)T,w,dos(iw)/dble(mc_count)
         flush(800)     
       enddo
         
