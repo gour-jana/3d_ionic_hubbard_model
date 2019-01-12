@@ -3,10 +3,6 @@
 datafile=input.dat
 pathfile=path.txt
 sub=job.sge
-
-mkdir -p 3d_ionic_DOS
-cd 3d_ionic_DOS
-
 for U1 in  1.0 2.0 3.0 4.0 5.0 6.0 8.0 10.0 12.0 14.0 16.0 18.0 20.0
 do
 mkdir -p U_$U1
@@ -46,7 +42,7 @@ echo   "0.02                       !gama_m "          >> $datafile
 echo   $strnth"0d0                       !strnth "        >> $datafile 
 echo   "$seed                      !seed "          >> $datafile
 #!******************************************************************************
-echo "../../../../../main_data/U_$U1/tp_$tp/seed_$seed/strnth_$strnth"    >> $pathfile
+echo "../../../../U_$U1/tp_$tp/seed_$seed/strnth_$strnth"    >> $pathfile
 #!******************************************************************************
 
 gfortran -o run.x  mtfort90.f  3d_tca_ttp_ionic_Hubbard_model.f90  -llapack -lblas
