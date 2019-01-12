@@ -25,8 +25,9 @@
 	  double precision::fs,sys_energy,mc_energy
 		character(len=100)::config_file
 		character(100)::dosfile
+		character(300)::path
 	  
-	  open (21,file='dos_input.dat',status='unknown')
+	  open (21,file='input.dat',status='unknown')
 	  do i=1,11
 	    read (21,*)inp
 	    if (i.eq.1)d=int(inp)
@@ -40,7 +41,15 @@
 	    if (i.eq.9)filling=dble(inp)
 	    if (i.eq.10)gama=dble(inp)
 			if (i.eq.11)strnth=dble(inp)
-	  enddo
+		enddo
+		
+		open(unit=14,file="path.txt",status="unknown")
+		read(14,'(A)')path
+		close(14)
+	 
+		open(unit=15,file="print_path.txt",status="unknown")
+		write(15,*)path
+		flush(15)
 
 	  
 	  Print*,"System size,  d=", d
@@ -93,7 +102,7 @@
 	 
        do temp=1,Tgrid_max
          write(config_file,"(a,I0,a)")"config_"temp".txt"
-         open(unit=7,file=config_file,status='unknown')
+         open(unit=7,file=trim(adjustl(path))//"config_file",status='unknown')
          do q=1,config*d**3
            read(7,*)op_fl(q+((temp-1)*config*d**3),1:5)
          enddo
