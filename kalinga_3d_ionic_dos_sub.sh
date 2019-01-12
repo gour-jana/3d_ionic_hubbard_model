@@ -22,7 +22,7 @@ do
 mkdir -p seed_$seed
 cd seed_$seed
 
-for strnth in 0.0 
+for strnth in 0.0 0.5 1.0
 do
 mkdir -p strnth_$strnth
 cd strnth_$strnth
